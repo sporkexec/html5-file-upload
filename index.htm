@@ -61,7 +61,7 @@
 		};
 	</script>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-	<script type="text/javascript" src="./jquery.html5-fileupload.js"></script>
+	<script type="text/javascript" src="jquery.html5-fileupload.js"></script>
 	<script type="text/javascript">
 		$(function() {
 			// Detector demo
@@ -78,7 +78,7 @@
 
 			// Enable plug-in
 			$('.file-upload, #dropbox').fileUpload({
-				url: './upload.json.php',
+				url: 'upload.json.php',
 				type: 'POST',
 				dataType: 'json',
 				beforeSend: function() {
@@ -99,7 +99,7 @@
 
 			// Enable image upload plugin
 			$('.image-upload').fileUpload({
-				url: './upload.json.php',
+				url: 'upload.json.php',
 				type: 'POST',
 				dataType: 'json',
 				imageMaxHeight: 200,
@@ -135,7 +135,7 @@
 <body>
 	<h1>HTML5 AJAX File Upload</h1>
 	<p>For Firefox 3, Chrome 5, Safari 5 and higher</p>
-	<p><a href="./jquery.html5-fileupload.js">Source (jQuery Plug-in)</a></p>
+	<p><a href="jquery.html5-fileupload.js">Source (jQuery Plug-in)</a></p>
 
 	<h2>Demo</h2>
 
@@ -144,12 +144,12 @@
 	<p id="image-detector">&nbsp;</p>
 
 	<h3>Click-and-send button</h3>
-	<form action="./upload.json.php" method="post" enctype="multipart/form-data">
+	<form action="upload.json.php" method="post" enctype="multipart/form-data">
 	<p><input class="file-upload" type="file" name="Filedata" /></p>
 	</form>
 
 	<h3>Click-and-send button (w/ CSS hack)</h3>
-	<form action="./upload.json.php" method="post" enctype="multipart/form-data">
+	<form action="upload.json.php" method="post" enctype="multipart/form-data">
 	<p id="file_container"><input class="file-upload" type="file" name="Filedata" /></p>
 	</form>
 
@@ -157,7 +157,7 @@
 	<div id="dropbox"></div>
 
 	<h3>Image resizing and uploading</h3>
-	<form action="./upload.json.php" method="post" enctype="multipart/form-data">
+	<form action="upload.json.php" method="post" enctype="multipart/form-data">
 	<p><input class="image-upload" type="file" name="Filedata" /></p>
 	</form>
 
