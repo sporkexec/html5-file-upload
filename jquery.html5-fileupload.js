@@ -57,7 +57,7 @@
  *
  *  TBD: 
  *   ability to change settings after binding (you can unbind and bind again as a workaround)
- *   multipole file handling
+ *   true multiple file handling
  *   form intergation
  *
  */
@@ -114,7 +114,29 @@
 		return dataurl.substring(dataurl.indexOf(',')+1, dataurl.length);
 	}
 	
-	// Step 1: check file info and attempt to read the file
+	// Step 1: prepare info and setup callbacks
+	// parameters: Ajax settings, file list
+	var handleGroup = function(settings, files) {
+		if (files.length > 1) {
+			log('WARN: Multiple file upload implemented with a hack. This will cause one request per file.');
+		}
+
+		if(settings.beforeGroup)
+			settings.beforeGroup(formatInfo(files));
+
+		settings.__complete = settings.complete;
+		function makeComplete(fileIndex) {
+			return function(xhr, s) {
+				if(settings.__complete) settings.__complete(xhr, s, fileIndex);
+			}
+		}
+
+		for(var i=0, l=files.length; i < l; i++)
+			handleFile($.extend({}, config, settings, {complete: makeComplete(i)}), files[i]);
+
+	};
+
+	// Step 1.25: check file info and attempt to read the file
 	// paramaters: Ajax settings, File object
 	var handleFile = function (settings, file) {
 		var info = {
@@ -446,6 +468,16 @@
 		}
 		$.ajax(settings);
 	};
+
+	var formatInfo = function(files) {
+		return $.map(files, function(file) {
+			return {
+				type: file.type || '', // MIME type
+				size: file.size || file.fileSize,
+				name: file.name || file.fileName
+			};
+		});
+	};
 	
 	$.fn.fileUpload = function(settings) {
 		this.each(function(i, el) {
@@ -457,10 +489,9 @@
 						if (!this.files.length) {
 							log('ERROR: no file selected.');
 							return;
-						} else if (this.files.length > 1) {
-							log('WARN: Multiple file upload not implemented yet, only first file will be uploaded.');
 						}
-						handleFile($.extend({}, config, settings), this.files[0]);
+
+						handleGroup(settings, this.files);
 						
 						if (this.form.length === 1) {
 							this.form.reset();
@@ -484,18 +515,17 @@
 				).bind(
 					'drop',
 					function (ev) {
-						if (!ev.originalEvent.dataTransfer.files) {
+						var files = !ev.originalEvent.dataTransfer.files;
+						if (!files) {
 							log('ERROR: No FileList object present; user might had dropped text.');
 							return false;
 						}
-						if (!ev.originalEvent.dataTransfer.files.length) {
+						if (!files.length) {
 							log('ERROR: User had dropped a virual file (e.g. "My Computer")');
 							return false;
 						}
-						if (!ev.originalEvent.dataTransfer.files.length > 1) {
-							log('WARN: Multiple file upload not implemented yet, only first file will be uploaded.');
-						}
-						handleFile($.extend({}, config, settings), ev.originalEvent.dataTransfer.files[0]);
+
+						handleGroup(settings, files);
 						return false;
 					}
 				);
