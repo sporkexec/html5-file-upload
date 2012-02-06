@@ -493,7 +493,7 @@
 
 						handleGroup(settings, this.files);
 						
-						if (this.form.length === 1) {
+						if (this.form && this.form.length === 1) {
 							this.form.reset();
 						} else {
 							log('WARN: Unable to reset file selection, upload won\'t be triggered again if user selects the same file.');
