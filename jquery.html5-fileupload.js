@@ -124,15 +124,31 @@
 		if(settings.beforeGroup)
 			settings.beforeGroup(formatInfo(files));
 
-		settings.__complete = settings.complete;
-		function makeComplete(fileIndex) {
-			return function(xhr, s) {
-				if(settings.__complete) settings.__complete(xhr, s, fileIndex);
-			}
+		settings.__beforeSend = settings.beforeSend;
+		settings.__success = settings.success;
+		settings.__error = settings.error;
+		function altSettings(fileIndex) {
+			var output = {};
+			output.success = function() {
+				var args = $.makeArray(arguments);
+				args.push(fileIndex);
+				if(settings.__success) settings.__success.apply(settings.__success, args);
+			};
+			output.error = function() {
+				var args = $.makeArray(arguments);
+				args.push(fileIndex);
+				if(settings.__error) settings.__error.apply(settings.__error, args);
+			};
+			output.beforeSend = function() {
+				var args = $.makeArray(arguments);
+				args.push(fileIndex);
+				if(settings.__beforeSend) settings.__beforeSend.apply(settings.__beforeSend, args);
+			};
+			return output;
 		}
 
 		for(var i=0, l=files.length; i < l; i++)
-			handleFile($.extend({}, config, settings, {complete: makeComplete(i)}), files[i]);
+			handleFile($.extend({}, config, settings, altSettings(i)), files[i]);
 
 	};
 
