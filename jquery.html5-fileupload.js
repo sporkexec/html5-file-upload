@@ -146,6 +146,7 @@
 			name: file.name || file.fileName
 		};
 
+		settings.formname = settings.formname || 'Filedata';
 		settings.resizeImage = !!(settings.imageMaxWidth || settings.imageMaxHeight);
 
 		if (settings.resizeImage && !isImageSupported && settings.allowUploadOriginalImage) {
@@ -368,7 +369,7 @@
 			// FormData API saves the day
 			log('INFO: Using FormData to construct form.');
 			var formdata = new FormData();
-			formdata.append('Filedata', data);
+			formdata.append(settings.formname, data);
 			// Prevent jQuery form convert FormData object into string.
 			settings.processData = false;
 			// Prevent jQuery from overwrite automatically generated xhr content-Type header
@@ -398,7 +399,7 @@
 			var bd = 'xhrupload-' + parseInt(Math.random()*(2 << 16));
 			settings.contentType = 'multipart/form-data; boundary=' + bd;
 			var formdata = '--' + bd + '\n' // RFC 1867 Format, simulate form file upload
-			+ 'content-disposition: form-data; name="Filedata";'
+			+ 'content-disposition: form-data; name="'+ settings.formname +'";'
 			+ ' filename="' + (info.name_bin || info.name) + '"\n'
 			+ 'Content-Type: ' + info.type + '\n\n'
 			+ data + '\n\n'
@@ -441,7 +442,7 @@
 			var bd = 'xhrupload-' + parseInt(Math.random()*(2 << 16));
 			settings.contentType = 'multipart/form-data; boundary=' + bd;
 			settings.data = '--' + bd + '\n' // RFC 1867 Format, simulate form file upload
-			+ 'content-disposition: form-data; name="Filedata";'
+			+ 'content-disposition: form-data; name="'+ settings.formname +'";'
 			+ ' filename="' + encodeURIComponent(info.name) + '.base64"\n'
 			+ 'Content-Transfer-Encoding: base64\n' // Vaild MIME header, but won't work with PHP file upload handling.
 			+ 'Content-Type: ' + info.type + '\n\n'
