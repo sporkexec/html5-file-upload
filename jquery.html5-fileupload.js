@@ -532,7 +532,7 @@
 				).bind(
 					'drop',
 					function (ev) {
-						var files = !ev.originalEvent.dataTransfer.files;
+						var files = ev.originalEvent.dataTransfer.files;
 						if (!files) {
 							log('ERROR: No FileList object present; user might had dropped text.');
 							return false;
